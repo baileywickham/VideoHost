@@ -15,9 +15,10 @@ def index():
 def getVideo(n):
     print(n)
     frame = f'''
-                <video width="1080" controls>
+                <video controls>
                     <source src="/static/{videosByHash[int(n)]}" type="video/mp4">
                 </video>
+                <a href="/static/{videosByHash[int(n)]}" download>{videosByHash[int(n)]}</a>
     '''
     return basicTemplate(frame)
 
@@ -39,7 +40,7 @@ def basicTemplate(var):
 def generateUl():
     links = ''
     for key in videos:
-        links += f'<li><a href="/videos/{videos[key]}">{key}</a></li>\n'
+        links += f'<li><a href="/videos/{videos[key]}">Download {key}</a></li>\n'
     return '<ul>\n' + links + '</ul>\n'
 
 
