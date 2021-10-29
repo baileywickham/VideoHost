@@ -2,8 +2,8 @@ import os
 from flask import Flask
 app = Flask(__name__)
 
-videos = {}
-videosByHash = {}
+files = {}
+filesByHash = {}
 
 @app.route('/')
 def index():
@@ -13,12 +13,12 @@ def index():
 
 @app.route('/videos/<n>', methods=['GET'])
 def getVideo(n):
-    print(n)
     frame = f'''
                 <video controls>
-                    <source src="/static/{videosByHash[int(n)]}" type="video/mp4">
+                    <source src="/static/{filesByHash[int(n)]}" type="video/mp4">
                 </video>
-                <a href="/static/{videosByHash[int(n)]}" download>{videosByHash[int(n)]}</a>
+                <br>
+                <a href="/static/{filesByHash[int(n)]}" download>Download {filesByHash[int(n)]}</a>
     '''
     return basicTemplate(frame)
 
@@ -39,20 +39,23 @@ def basicTemplate(var):
 
 def generateUl():
     links = ''
-    for key in videos:
-        links += f'<li><a href="/videos/{videos[key]}">Download {key}</a></li>\n'
-    return '<ul>\n' + links + '</ul>\n'
+    for key in files:
+        if key.endswith('mp4'):
+            links += f'<li><a href="/videos/{files[key]}">{key}</a></li>\n'
+        else:
+            links += f'<li><a href="/static/{key}" download>Download</a> {key}</li>\n'
+    return f'<ul>{links}</ul>'
 
 
 def generateVideos():
-    global videos
-    global videosByHash
+    # Use a two way dict of names to ints for URLs.
+    global files
+    global filesByHash
     i = 0
     for file in os.listdir('static'):
-        if file.endswith('.mp4'):
-            videos[file] = i
-            videosByHash[i] = file
-            i += 1
+        files[file] = i
+        filesByHash[i] = file
+        i += 1
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=9000)
