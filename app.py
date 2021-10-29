@@ -2,12 +2,14 @@ import os
 from flask import Flask
 app = Flask(__name__)
 
+# filename -> int
 files = {}
+# int -> filename
 filesByHash = {}
 
 @app.route('/')
 def index():
-    generateVideos()
+    generateFiles()
     return basicTemplate(generateUl())
 
 
@@ -47,7 +49,7 @@ def generateUl():
     return f'<ul>{links}</ul>'
 
 
-def generateVideos():
+def generateFiles():
     # Use a two way dict of names to ints for URLs.
     global files
     global filesByHash
